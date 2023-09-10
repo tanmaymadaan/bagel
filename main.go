@@ -5,14 +5,6 @@ import (
 	"net/http"
 )
 
-func copyHeaders(dst http.Header, src http.Header) {
-	for key, values := range src {
-		for _, value := range values {
-			dst.Add(key, value)
-		}
-	}
-}
-
 func main() {
 	servers := []string{
 		"http://localhost:8081/",
