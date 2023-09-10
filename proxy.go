@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"net/http"
 )
@@ -29,7 +30,13 @@ func (p *Proxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error making request to backend server", http.StatusInternalServerError)
 		return
 	}
-	defer resp.Body.Close()
+
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			fmt.Println("Error closing the response body", err)
+		}
+	}(resp.Body)
 
 	w.WriteHeader(resp.StatusCode)
 	copyHeaders(w.Header(), resp.Header)
